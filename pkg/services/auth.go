@@ -25,6 +25,9 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (resp *p
 		}, nil
 	}
 
+	user.Username = req.Username
+	user.Password = utils.Hash(req.Password)
+
 	if result := s.DBPointer.DataBase.Create(&user); result.Error != nil {
 		return &pb.RegisterResponse{
 			Status: http.StatusInternalServerError,
@@ -39,7 +42,7 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (resp *p
 
 func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (resp *pb.LoginResponse, err error) {
 	var user models.User
-	if result := s.DBPointer.DataBase.Where(&user).First(&user); result.Error != nil {
+	if result := s.DBPointer.DataBase.Where(&models.User{Username: req.Username}).First(&user); result.Error != nil {
 		return &pb.LoginResponse{
 			Status: http.StatusUnauthorized,
 			Error:  "Invalid username or password",

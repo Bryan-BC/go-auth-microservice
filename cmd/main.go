@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 
@@ -33,7 +32,7 @@ func main() {
 		log.Panicf("Error listening, %s", err)
 	}
 
-	fmt.Printf("Auth microservice listening on port %s", c.Port)
+	log.Printf("Auth microservice listening on port %s", c.Port)
 
 	s := services.Server{
 		JWT:       &jwt,
