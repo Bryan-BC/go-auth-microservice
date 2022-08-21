@@ -20,7 +20,7 @@ type jwtClaims struct {
 	Username string
 }
 
-func (w *JWTWrapper) GenerateToken(user models.User) (signedToken string, err error) {
+func (w *JWTWrapper) GenerateToken(user models.User) (string, error) {
 	claims := &jwtClaims{
 		Id:       user.Id,
 		Username: user.Username,
@@ -32,16 +32,17 @@ func (w *JWTWrapper) GenerateToken(user models.User) (signedToken string, err er
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	signedToken, err = token.SignedString([]byte(w.Secret))
+	signedToken, err := token.SignedString([]byte(w.Secret))
 
 	if err != nil {
 		log.Panicf("Error signing token, %s", err)
+		return "", err
 	}
 
 	return signedToken, nil
 }
 
-func (w *JWTWrapper) ValidateToken(signedToken string) (claims *jwtClaims, err error) {
+func (w *JWTWrapper) ValidateToken(signedToken string) (*jwtClaims, error) {
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&jwtClaims{},
@@ -52,16 +53,19 @@ func (w *JWTWrapper) ValidateToken(signedToken string) (claims *jwtClaims, err e
 
 	if err != nil {
 		log.Panicf("Error parsing token, %s", err)
+		return nil, err
 	}
 
 	claims, ok := token.Claims.(*jwtClaims)
 
 	if !ok {
 		log.Panicf("Error casting token claims, %s", err)
+		return nil, err
 	}
 
 	if claims.ExpiresAt < time.Now().Local().Unix() {
 		log.Panicf("Token expired, %s", err)
+		return nil, err
 	}
 
 	return claims, nil

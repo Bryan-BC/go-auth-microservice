@@ -15,7 +15,7 @@ type Server struct {
 	JWT       *utils.JWTWrapper
 }
 
-func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (resp *pb.RegisterResponse, err error) {
+func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	var user models.User
 
 	if result := s.DBPointer.DataBase.Where(&models.User{Username: req.Username}).First(&user); result.Error == nil {
@@ -40,7 +40,7 @@ func (s *Server) Register(ctx context.Context, req *pb.RegisterRequest) (resp *p
 	}, nil
 }
 
-func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (resp *pb.LoginResponse, err error) {
+func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	var user models.User
 	if result := s.DBPointer.DataBase.Where(&models.User{Username: req.Username}).First(&user); result.Error != nil {
 		return &pb.LoginResponse{
@@ -72,7 +72,7 @@ func (s *Server) Login(ctx context.Context, req *pb.LoginRequest) (resp *pb.Logi
 	}, nil
 }
 
-func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (resp *pb.ValidateResponse, err error) {
+func (s *Server) Validate(ctx context.Context, req *pb.ValidateRequest) (*pb.ValidateResponse, error) {
 	claims, err := s.JWT.ValidateToken(req.Token)
 
 	if err != nil {

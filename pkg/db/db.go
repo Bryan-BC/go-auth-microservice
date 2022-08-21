@@ -15,7 +15,7 @@ type DB struct {
 func Init(url string) DB {
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
-		log.Panicf("Error opening database, %s", err)
+		log.Panicf("Error opening database, %s \n", err)
 	}
 
 	db.AutoMigrate(&models.User{})

@@ -15,7 +15,7 @@ import (
 func main() {
 	c, err := config.LoadConfig()
 	if err != nil {
-		log.Panicf("Error loading config, %s", err)
+		log.Panicf("Error loading config, %s \n", err)
 	}
 
 	db := db.Init(c.DBURL)
@@ -27,12 +27,11 @@ func main() {
 	}
 
 	listener, err := net.Listen("tcp", c.Port)
-
 	if err != nil {
-		log.Panicf("Error listening, %s", err)
+		log.Panicf("Error listening, %s \n", err)
 	}
 
-	log.Printf("Auth microservice listening on port %s", c.Port)
+	log.Printf("Auth microservice listening on port %s \n", c.Port)
 
 	s := services.Server{
 		JWT:       &jwt,
