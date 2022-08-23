@@ -19,13 +19,13 @@ func LoadConfig() (*Config, error) {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Panicf("Error reading config file, %s", err)
+		log.Panicf("Error reading config file, %s \n", err)
 		return nil, err
 	}
 
 	var c Config
 	if err := viper.Unmarshal(&c); err != nil {
-		log.Panicf("unable to decode into struct, %v", err)
+		log.Panicf("Error unmarshalling config, %s \n", err)
 		return nil, err
 	}
 
